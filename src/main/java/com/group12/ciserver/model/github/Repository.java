@@ -10,4 +10,6 @@ public class Repository {
 
     @JsonProperty("clone_url")
     private String cloneUrl;
+
+    private Owner owner;
 }
