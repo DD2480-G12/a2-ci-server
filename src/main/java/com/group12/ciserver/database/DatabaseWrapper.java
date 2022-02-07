@@ -3,7 +3,6 @@ package com.group12.ciserver.database;
 import com.group12.ciserver.model.BuildInfo;
 import org.springframework.stereotype.Component;
 
-import java.text.DateFormat;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
