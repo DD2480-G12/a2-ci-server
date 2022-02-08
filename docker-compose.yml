@@ -1,0 +1,24 @@
+version: '3.7'
+services:
+  ci-server:
+    container_name: ci-server
+    working_dir: /app
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: ci-server:latest
+    ports:
+      - 8080:8080
+    environment:
+      REPO_DIR: /opt/ci-repos
+      PEM_LOCATION: /opt/webapp.pem
+    volumes:
+      - type: bind
+        source: ${HOST_REPO_DIR}
+        target: /opt/ci-repos
+      - type: bind
+        source: ${HOST_PEM_LOCATION}
+        target: /opt/webapp.pem
+      - type: bind
+        source: ${HOST_DATA_DIR}
+        target: /app
