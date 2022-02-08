@@ -56,4 +56,38 @@ public class EventController {
         }
 
     }
+
+    // for testing
+    @GetMapping("/add/{commitId}/{content}")
+    @ResponseBody
+    public ResponseEntity<Long> addBuildForTesting(@PathVariable String commitId, @PathVariable String content) {
+        BuildInfo b = new BuildInfo(commitId, content);
+        long result = databaseWrapper.addBuild(b);
+        if (result != -1) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    // for testing
+    @GetMapping("/remove/{buildId}")
+    @ResponseBody
+    public ResponseEntity<Boolean> removeBuildForTesting(@PathVariable String buildId) {
+        long uid;
+        try {
+            uid = Integer.parseInt(buildId);
+        } catch (NumberFormatException e) {
+            System.err.println("Bad format for build ID: " + e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+
+        Boolean result = databaseWrapper.removeBuild(uid);
+        if (result)
+        {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
