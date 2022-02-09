@@ -2,6 +2,7 @@ package com.group12.ciserver.controller;
 
 
 import com.group12.ciserver.model.github.PushEvent;
+import com.group12.ciserver.service.CIService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +20,17 @@ import java.util.ArrayList;
 @RestController
 @Slf4j
 public class EventController {
+
+    @Autowired
+    private CIService ciService;
+
     @Autowired
     private DatabaseWrapper databaseWrapper;
 
     @PostMapping("/push-events")
     public ResponseEntity<Void> pushEvent(@RequestBody PushEvent pushEvent) {
         log.info("Received push event, pushEvent={}", pushEvent);
+        ciService.startCIPipeline(pushEvent);
         return ResponseEntity.noContent().build();
     }
 
