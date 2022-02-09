@@ -30,6 +30,8 @@ import java.util.*;
 @Component
 public class GithubClient {
 
+    @Value("${githubclient.server-url}")
+    private String ciServerUrl;
     @Value("${githubclient.repo-clone-base-directory}")
     private String repoCloneBaseDirectory;
     @Value("${githubclient.app-installation-id}")
@@ -82,7 +84,7 @@ public class GithubClient {
      * @throws Exception is thrown if the action fails, this can be for several reasons (invalid keys, internet connection,
      *          parameters, etc).
      */
-    public ResponseEntity<JsonNode> createStatusMsg(PushEvent pushEvent, CommitState commitState, String message) throws Exception {
+    public ResponseEntity<JsonNode> createStatusMsg(PushEvent pushEvent, CommitState commitState, String message, Long buildId) throws Exception {
         if ((new Date()).getTime() - tokenCreated.getTime() > 30*60000) {
             createInstallationToken();
         }
@@ -100,6 +102,9 @@ public class GithubClient {
         Map<String, Object> map = new HashMap<>();
         map.put("state", commitState.name().toLowerCase());
         map.put("description", message);
+        if (buildId != null) {
+            map.put("target_url", ciServerUrl + "/history/" + buildId);
+        }
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
         RestTemplate restTemplate = new RestTemplate();

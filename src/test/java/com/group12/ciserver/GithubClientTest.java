@@ -32,7 +32,7 @@ class GithubClientTest {
         pe.setAfter("3f833431bece5b7799e268498d227e7f2b005a31");
         pe.setRepository(repo);
 
-        assertDoesNotThrow(() -> githubClient.createStatusMsg(pe, CommitState.SUCCESS, "Unit test"));
+        assertDoesNotThrow(() -> githubClient.createStatusMsg(pe, CommitState.SUCCESS, "Unit test", null));
     }
 
     @Test
@@ -49,6 +49,6 @@ class GithubClientTest {
         pe.setAfter("3f833431bece5b7799e268498d227e7f2b005a31");
         pe.setRepository(repo);
 
-        assertThrows(HttpClientErrorException.class, () -> githubClient.createStatusMsg(pe, CommitState.SUCCESS, "Unit test"));
+        assertThrows(HttpClientErrorException.class, () -> githubClient.createStatusMsg(pe, CommitState.SUCCESS, "Unit test", null));
     }
 }
