@@ -1,1 +1,2 @@
 test: build success
+test: persistence (server restart) & build success
