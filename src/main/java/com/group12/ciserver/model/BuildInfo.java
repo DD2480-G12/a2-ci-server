@@ -5,7 +5,7 @@ import java.time.OffsetDateTime;
 
 public class BuildInfo {
 
-    private final long uid;
+    private long uid;
     private final String commitId;
     private final String content;
     private final OffsetDateTime timestamp;
@@ -26,6 +26,12 @@ public class BuildInfo {
         this.commitId = commitId;
         this.content = content;
         this.timestamp = ts;
+    }
+
+    public BuildInfo(String commitId, String content, OffsetDateTime timestamp) {
+        this.commitId = commitId;
+        this.content = content;
+        this.timestamp = timestamp;
     }
 
     public OffsetDateTime getTimestamp() {
