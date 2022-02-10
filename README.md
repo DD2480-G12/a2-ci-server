@@ -44,7 +44,7 @@ We integrate functionalities of GitHub Apps to communicate with GitHub. Please r
 **Before running any commands**, you need to place the private key under **the parent directory of
 the project directory**, and name it as `webapp.pem`. If you prefer to put it elsewhere, you can override the default settings
 by exporting an environment variable:
-```yaml
+```bash
 export PEM_LOCATION=/my/custom/directory/webapp.pem
 ```
 
@@ -52,7 +52,7 @@ export PEM_LOCATION=/my/custom/directory/webapp.pem
 We clone and save the repositories of push events on local file system.
 By default, they are saved in a directory called `repos` under **the parent directory of
 the project directory**. You can override this path using:
-```yaml
+```bash
 export REPO_DIR=/my/custom/repos
 ```
 
@@ -170,7 +170,12 @@ Returns an array of BuildInfo, if the history is empty, an empty array will be r
 BuildInfo
 
 ```
-{    uid: Integer,    commitId: String,    content: String,    timestamp: String}
+{    
+  uid: Integer,    
+  commitId: String,    
+  content: String,    
+  timestamp: String
+}
 ```
 
 ### Specific build
@@ -199,7 +204,12 @@ Returns a BuildInfo
 BuildInfo
 
 ```
-{    uid: Integer,    commitId: String,    content: String,    timestamp: String}
+{    
+  uid: Integer,    
+  commitId: String,    
+  content: String,    
+  timestamp: String
+}
 ```
 
 
