@@ -1,4 +1,4 @@
-package com.group12.ciserver;
+package com.group12.ciserver.client;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
