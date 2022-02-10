@@ -87,9 +87,9 @@ public class CIServiceTest {
         when(ciJobExecutor.runMavenCommand("test", workingDir)).thenReturn(testJobResults);
 
         when(githubClient.cloneRepoAndSwitchBranch(pushEvent)).thenReturn(workingDir);
-        when(githubClient.createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline..."))
+        when(githubClient.createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...", null))
                 .thenReturn(ResponseEntity.ok().build());
-        when(githubClient.createStatusMsg(pushEvent, CommitState.SUCCESS, "Pipeline successful"))
+        when(githubClient.createStatusMsg(pushEvent, CommitState.SUCCESS, "Pipeline successful", 1L))
                 .thenReturn(ResponseEntity.ok().build());
 
         when(databaseWrapper.addBuild(any(BuildInfo.class))).thenReturn(1L);
@@ -105,9 +105,9 @@ public class CIServiceTest {
         ciService.startCIPipeline(pushEvent);
 
         verify(githubClient, times(1))
-                .createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...");
+                .createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...", null);
         verify(githubClient, times(1))
-                .createStatusMsg(pushEvent, CommitState.SUCCESS, "Pipeline successful");
+                .createStatusMsg(pushEvent, CommitState.SUCCESS, "Pipeline successful", 1L);
         verifyNoMoreInteractions(githubClient);
 
         ArgumentCaptor<BuildInfo> buildInfoCaptor = ArgumentCaptor.forClass(BuildInfo.class);
@@ -139,9 +139,9 @@ public class CIServiceTest {
         when(ciJobExecutor.runMavenCommand("compile", workingDir)).thenReturn(compileJobResult);
 
         when(githubClient.cloneRepoAndSwitchBranch(pushEvent)).thenReturn(workingDir);
-        when(githubClient.createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline..."))
+        when(githubClient.createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...", null))
                 .thenReturn(ResponseEntity.ok().build());
-        when(githubClient.createStatusMsg(pushEvent, CommitState.FAILURE, "Compilation of project failed"))
+        when(githubClient.createStatusMsg(pushEvent, CommitState.FAILURE, "Compilation of project failed", 1L))
                 .thenReturn(ResponseEntity.ok().build());
 
         when(databaseWrapper.addBuild(any(BuildInfo.class))).thenReturn(1L);
@@ -156,9 +156,9 @@ public class CIServiceTest {
         verify(ciJobExecutor, times(0)).runMavenCommand("test", workingDir);
 
         verify(githubClient, times(1))
-                .createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...");
+                .createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...", null);
         verify(githubClient, times(1))
-                .createStatusMsg(pushEvent, CommitState.FAILURE, "Compilation of project failed");
+                .createStatusMsg(pushEvent, CommitState.FAILURE, "Compilation of project failed", 1L);
         verifyNoMoreInteractions(githubClient);
 
         ArgumentCaptor<BuildInfo> buildInfoCaptor = ArgumentCaptor.forClass(BuildInfo.class);
@@ -196,9 +196,9 @@ public class CIServiceTest {
         when(ciJobExecutor.runMavenCommand("test", workingDir)).thenReturn(testJobResults);
 
         when(githubClient.cloneRepoAndSwitchBranch(pushEvent)).thenReturn(workingDir);
-        when(githubClient.createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline..."))
+        when(githubClient.createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...", null))
                 .thenReturn(ResponseEntity.ok().build());
-        when(githubClient.createStatusMsg(pushEvent, CommitState.FAILURE, "Tests failed"))
+        when(githubClient.createStatusMsg(pushEvent, CommitState.FAILURE, "Tests failed", 1L))
                 .thenReturn(ResponseEntity.ok().build());
 
         when(databaseWrapper.addBuild(any(BuildInfo.class))).thenReturn(1L);
@@ -213,9 +213,9 @@ public class CIServiceTest {
         ciService.startCIPipeline(pushEvent);
 
         verify(githubClient, times(1))
-                .createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...");
+                .createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...", null);
         verify(githubClient, times(1))
-                .createStatusMsg(pushEvent, CommitState.FAILURE, "Tests failed");
+                .createStatusMsg(pushEvent, CommitState.FAILURE, "Tests failed", 1L);
         verifyNoMoreInteractions(githubClient);
 
         ArgumentCaptor<BuildInfo> buildInfoCaptor = ArgumentCaptor.forClass(BuildInfo.class);
@@ -243,9 +243,9 @@ public class CIServiceTest {
                 .thenThrow(UnexpectedCIJobErrorException.class);
 
         when(githubClient.cloneRepoAndSwitchBranch(pushEvent)).thenReturn(workingDir);
-        when(githubClient.createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline..."))
+        when(githubClient.createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...", null))
                 .thenReturn(ResponseEntity.ok().build());
-        when(githubClient.createStatusMsg(pushEvent, CommitState.ERROR, "Unexpected error occurred on server"))
+        when(githubClient.createStatusMsg(pushEvent, CommitState.ERROR, "Unexpected error occurred on server", 1L))
                 .thenReturn(ResponseEntity.ok().build());
 
         when(databaseWrapper.addBuild(any(BuildInfo.class))).thenReturn(1L);
@@ -257,9 +257,9 @@ public class CIServiceTest {
         verify(ciJobExecutor, times(0)).runMavenCommand("test", workingDir);
 
         verify(githubClient, times(1))
-                .createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...");
+                .createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...", null);
         verify(githubClient, times(1))
-                .createStatusMsg(pushEvent, CommitState.ERROR, "Unexpected error occurred on server");
+                .createStatusMsg(pushEvent, CommitState.ERROR, "Unexpected error occurred on server", 1L);
         verifyNoMoreInteractions(githubClient);
 
         ArgumentCaptor<BuildInfo> buildInfoCaptor = ArgumentCaptor.forClass(BuildInfo.class);
@@ -293,9 +293,9 @@ public class CIServiceTest {
                 .thenThrow(UnexpectedCIJobErrorException.class);
 
         when(githubClient.cloneRepoAndSwitchBranch(pushEvent)).thenReturn(workingDir);
-        when(githubClient.createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline..."))
+        when(githubClient.createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...", null))
                 .thenReturn(ResponseEntity.ok().build());
-        when(githubClient.createStatusMsg(pushEvent, CommitState.ERROR, "Unexpected error occurred on server"))
+        when(githubClient.createStatusMsg(pushEvent, CommitState.ERROR, "Unexpected error occurred on server", 1L))
                 .thenReturn(ResponseEntity.ok().build());
 
         when(databaseWrapper.addBuild(any(BuildInfo.class))).thenReturn(1L);
@@ -305,9 +305,9 @@ public class CIServiceTest {
         ciService.startCIPipeline(pushEvent);
 
         verify(githubClient, times(1))
-                .createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...");
+                .createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...", null);
         verify(githubClient, times(1))
-                .createStatusMsg(pushEvent, CommitState.ERROR, "Unexpected error occurred on server");
+                .createStatusMsg(pushEvent, CommitState.ERROR, "Unexpected error occurred on server", 1L);
         verifyNoMoreInteractions(githubClient);
 
         ArgumentCaptor<BuildInfo> buildInfoCaptor = ArgumentCaptor.forClass(BuildInfo.class);
