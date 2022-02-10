@@ -23,3 +23,15 @@ locally.
 The unit tests have been implemented by sending a POST request to GitHub and observing the response.
 One test case send valid API data and expects a valid response, another sends invalid API data and
 expects an invalid response.
+
+## SEMAT
+
+#### Current state: between Formed and Collaborating
+
+We are working on forming a team that works as a cohesive unit.
+We don’t think we are all the way there yet, as we could coordinate more
+and discuss more what issues we should work on next and how we could help
+each other. We know each other sufficiently to work together, even though
+we of course could know each other much better if we had time for team
+building. The team mission is quite clear from the assignment, and it’s
+clear that the team is focused on achieving it.
