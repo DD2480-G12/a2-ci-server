@@ -80,6 +80,7 @@ public class GithubClient {
      * @param pushEvent The {@link PushEvent} that contains information about the push event.
      * @param commitState The {@link CommitState} that is to be set.
      * @param message A message that can be set in addition to the status. Can be an empty string.
+     * @param buildId An ID that references this specific build. Can be set to null if it should be omitted.
      * @return A {@link ResponseEntity} that represents the response received from GitHub.
      * @throws Exception is thrown if the action fails, this can be for several reasons (invalid keys, internet connection,
      *          parameters, etc).
