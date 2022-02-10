@@ -1,2 +1,3 @@
 test: build success
 test: persistence (server restart) & build success
+test: latest main
