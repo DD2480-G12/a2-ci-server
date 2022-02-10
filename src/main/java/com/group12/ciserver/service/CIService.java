@@ -1,6 +1,6 @@
 package com.group12.ciserver.service;
 
-import com.group12.ciserver.GithubClient;
+import com.group12.ciserver.client.GithubClient;
 import com.group12.ciserver.database.DatabaseWrapper;
 import com.group12.ciserver.model.BuildInfo;
 import com.group12.ciserver.model.ci.CIJobResult;

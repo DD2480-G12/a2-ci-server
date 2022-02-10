@@ -1,5 +1,6 @@
 package com.group12.ciserver;
 
+import com.group12.ciserver.client.GithubClient;
 import com.group12.ciserver.model.github.CommitState;
 import com.group12.ciserver.model.github.Owner;
 import com.group12.ciserver.model.github.PushEvent;
