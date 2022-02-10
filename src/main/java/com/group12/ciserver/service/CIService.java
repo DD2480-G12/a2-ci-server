@@ -7,31 +7,42 @@ import com.group12.ciserver.model.ci.CIJobResult;
 import com.group12.ciserver.model.ci.UnexpectedCIJobErrorException;
 import com.group12.ciserver.model.github.CommitState;
 import com.group12.ciserver.model.github.PushEvent;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class CIService {
 
+    private final CIJobExecutor ciJobExecutor;
+
     private final GithubClient githubClient;
 
     private final DatabaseWrapper databaseWrapper;
 
+    /**
+     * Starts a CI pipeline containing two stages, compile and test.
+     * <p>
+     * <b>Note:</b> This pipeline only supports maven projects.
+     * <p>
+     * The commit status of the commit that triggered the pipeline is updated accordingly.
+     * <ul>
+     *     <li>PENDING - while the pipeline is running</li>
+     *     <li>SUCCESS - if both compile and test stage passes</li>
+     *     <li>FAILURE - if one of the stages fails</li>
+     *     <li>ERROR - if an unexpected error occurs during one of the stages </li>
+     * </ul>
+     *
+     * @param pushEvent is the <i>push</i> event received from GitHub's webhook.
+     */
     @SneakyThrows
     @Async
     public void startCIPipeline(PushEvent pushEvent) {
@@ -46,7 +57,7 @@ public class CIService {
         try {
             log.info("Compiling maven project...");
             buildLogs.append("mvn compile\n");
-            CIJobResult compileResults = executeCommand(workingDirectory, "mvn", "compile");
+            CIJobResult compileResults = ciJobExecutor.runMavenCommand("compile", workingDirectory);
             buildLogs.append(compileResults.getLogs());
             if (!compileResults.isSuccessful()) {
                 databaseWrapper.addBuild(new BuildInfo(pushEvent.getAfter(), buildLogs.toString(),
@@ -57,7 +68,7 @@ public class CIService {
             }
             log.info("Running maven project tests...");
             buildLogs.append("mvn test\n");
-            CIJobResult testResults = executeCommand(workingDirectory, "mvn", "test");
+            CIJobResult testResults = ciJobExecutor.runMavenCommand("test", workingDirectory);
             buildLogs.append(testResults.getLogs());
             if (!testResults.isSuccessful()) {
                 databaseWrapper.addBuild(new BuildInfo(pushEvent.getAfter(), buildLogs.toString(),
@@ -78,27 +89,5 @@ public class CIService {
                 pipelineStartTimestamp));
         githubClient.createStatusMsg(pushEvent, CommitState.SUCCESS, "Pipeline successful");
         log.info("Pipeline successful.");
-    }
-
-    private CIJobResult executeCommand(File workingDirectory, String... command) throws UnexpectedCIJobErrorException {
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command(command);
-        processBuilder.directory(workingDirectory);
-        try {
-            Process process = processBuilder.start();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            StringBuilder compileLogs = new StringBuilder();
-            String logLine;
-            while ((logLine = reader.readLine()) != null) {
-                compileLogs.append(logLine).append("\n");
-            }
-            int processExitValue = process.waitFor();
-            return CIJobResult.builder()
-                    .successful(processExitValue == 0)
-                    .logs(compileLogs.toString())
-                    .build();
-        } catch (IOException | InterruptedException e) {
-            throw new UnexpectedCIJobErrorException(e.getMessage());
-        }
     }
 }
