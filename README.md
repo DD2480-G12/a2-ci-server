@@ -75,6 +75,32 @@ The unit tests have been implemented by sending a POST request to GitHub and obs
 One test case send valid API data and expects a valid response, another sends invalid API data and
 expects an invalid response.
 
+## Compile and Test Stages
+
+### Implementation
+
+Both the *compile* and the *test* stages are implemented inside a class called `CIService` which starts a pipeline
+executing them. The pipeline starts by cloning the git repo and branch the latest commit has been made. After that,
+*compile* and *test* stages are executed in that order.
+
+Since the CI server only supports Maven projects, `mvn compile` is used for compiling and `mvn test` for testing the
+changes. In order execute the maven commands, a new class called `CIJobExecutor` is implemented that handles somewhat
+lower level shell execution with the help of Java's `ProcessBuilder` and `Process` classes. The `CIJobExecutor` collects
+logs of the executed commands and returns them to the `CIService`, and it also tells if the stage passed or not.
+
+While the pipeline is running, the commit status is updated accordingly. The build logs are stored when the pipeline
+is finished with either a success, failure or an error.
+
+### Unit testing
+
+The `CIService`, i.e. the pipeline, is unit tested by mocking the `GithubClient`, `DatabaseWrapper` and
+`CIJobExcecutor`. Each unit test tests different scenarios like when both *compile* and *test* passes, when one of them
+fails and when there is an unexpected error during execution, and that the commit status is updated correctly and that
+the build logs are stored correctly in the database.
+
+**Note:** In order to test that real maven commands are executed in the pipeline and that they are working as expected,
+acceptance tests and regression tests were made in the real server environment.
+
 ## SEMAT
 
 #### Current state: between Formed and Collaborating
