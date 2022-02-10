@@ -35,6 +35,28 @@ CREATE TABLE builds (
 );
 ```
 
+## Configuration
+
+### GitHub App Authentication
+We integrate functionalities of GitHub Apps to communicate with GitHub. Please refer to 
+[this page](https://docs.github.com/en/developers/apps/building-github-apps/authenticating-with-github-apps) on how to create an app and generate a private key.
+
+**Before running any commands**, you need to place the private key under **the parent directory of
+the project directory**, and name it as `webapp.pem`. If you prefer to put it elsewhere, you can override the default settings
+by exporting an environment variable:
+```yaml
+export PEM_LOCATION=/my/custom/directory/webapp.pem
+```
+
+### Repository Storage
+We clone and save the repositories of push events on local file system.
+By default, they are saved in a directory called `repos` under **the parent directory of
+the project directory**. You can override this path using:
+```yaml
+export REPO_DIR=/my/custom/repos
+```
+
+
 ## Development
 
 Start the application:
@@ -72,9 +94,9 @@ docker-compose -f docker-compose.yml up -d
 Configure data directories in `.env` file:
 
 ```yaml
-HOST_REPO_DIR=/home/ncj19991213/ci-repos        # store cloned repo
-HOST_PEM_LOCATION=/home/ncj19991213/webapp.pem  # your GitHub app credential
-HOST_DATA_DIR=/opt/ci-server-data               # database & other data
+HOST_REPO_DIR=/home/ncj19991213/ci-repos        # store cloned repo on host
+HOST_PEM_LOCATION=/home/ncj19991213/webapp.pem  # your GitHub app credential on host
+HOST_DATA_DIR=/opt/ci-server-data               # database & other data on host
 ```
 
 ## CI result notification
