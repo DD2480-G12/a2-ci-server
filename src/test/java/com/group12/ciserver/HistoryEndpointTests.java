@@ -43,7 +43,7 @@ class HistoryEndpointTests {
 
         when(controller.buildHistory()).thenReturn(history);
         // Expect empty json array as history is an empty list
-        this.mockMvc.perform(get("/history")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/history")).andExpect(status().isOk())
                 .andExpect(content().string(containsString("[]")));
     }
 
@@ -57,7 +57,7 @@ class HistoryEndpointTests {
         history.add(b2);
 
         when(controller.buildHistory()).thenReturn(history);
-        this.mockMvc.perform(get("/history")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/history")).andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].uid").value("1"))
                 .andExpect(jsonPath("$[1].uid").value("2"))
                 .andExpect(jsonPath("$[0].commitId").value("commit1"))
@@ -74,7 +74,7 @@ class HistoryEndpointTests {
 
         when(controller.buildInfo("0")).thenReturn(ResponseEntity.notFound().build());
 
-        this.mockMvc.perform(get("/history/0")).andDo(print()).andExpect(status().isNotFound())
+        this.mockMvc.perform(get("/history/0")).andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.uid").doesNotExist())
                 .andExpect(jsonPath("$.commitId").doesNotExist())
                 .andExpect(jsonPath("$.content").doesNotExist())
@@ -88,7 +88,7 @@ class HistoryEndpointTests {
 
         when(controller.buildInfo("0")).thenReturn(ResponseEntity.ok(build));
 
-        this.mockMvc.perform(get("/history/0")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/history/0")).andExpect(status().isOk())
                 .andExpect(jsonPath("$.uid").value("0"))
                 .andExpect(jsonPath("$.commitId").value("commithash"))
                 .andExpect(jsonPath("$.content").value("content"))
@@ -100,7 +100,7 @@ class HistoryEndpointTests {
 
         when(controller.buildInfo("badnumber")).thenReturn(ResponseEntity.badRequest().build());
 
-        this.mockMvc.perform(get("/history/badnumber")).andDo(print()).andExpect(status().isBadRequest())
+        this.mockMvc.perform(get("/history/badnumber")).andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.uid").doesNotExist())
                 .andExpect(jsonPath("$.commitId").doesNotExist())
                 .andExpect(jsonPath("$.content").doesNotExist())
