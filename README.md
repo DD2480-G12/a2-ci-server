@@ -18,6 +18,17 @@ The build log is saved in local database. Commit status and url of build detail 
 * SQLite: Data Storage & Persistence
 * Docker: Fast Deployment & Runtime Isolation
 
+## Database Schema
+Persistent storage of build data was implemented using a SQLite database file with the following schema:
+```sql
+CREATE TABLE builds (
+    uid INTEGER PRIMARY KEY,
+    commit_hash TEXT,
+    content TEXT,
+    timestamp TEXT
+);
+```
+
 ## Development
 Start the application:
 ```bash
