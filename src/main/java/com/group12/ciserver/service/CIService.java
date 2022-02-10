@@ -50,7 +50,7 @@ public class CIService {
         OffsetDateTime pipelineStartTimestamp = OffsetDateTime.now(ZoneOffset.UTC);
         StringBuilder buildLogs = new StringBuilder();
         buildLogs.append("Running CI pipeline...\n");
-        githubClient.createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...");
+        githubClient.createStatusMsg(pushEvent, CommitState.PENDING, "Running CI pipeline...", null);
         log.info("Cloning repo...");
         buildLogs.append("Cloning repo...\n");
         File workingDirectory = githubClient.cloneRepoAndSwitchBranch(pushEvent);
@@ -60,9 +60,9 @@ public class CIService {
             CIJobResult compileResults = ciJobExecutor.runMavenCommand("compile", workingDirectory);
             buildLogs.append(compileResults.getLogs());
             if (!compileResults.isSuccessful()) {
-                databaseWrapper.addBuild(new BuildInfo(pushEvent.getAfter(), buildLogs.toString(),
+                Long buildId = databaseWrapper.addBuild(new BuildInfo(pushEvent.getAfter(), buildLogs.toString(),
                         pipelineStartTimestamp));
-                githubClient.createStatusMsg(pushEvent, CommitState.FAILURE, "Compilation of project failed");
+                githubClient.createStatusMsg(pushEvent, CommitState.FAILURE, "Compilation of project failed", buildId);
                 log.info("Compilation of project failed...");
                 return;
             }
@@ -71,23 +71,23 @@ public class CIService {
             CIJobResult testResults = ciJobExecutor.runMavenCommand("test", workingDirectory);
             buildLogs.append(testResults.getLogs());
             if (!testResults.isSuccessful()) {
-                databaseWrapper.addBuild(new BuildInfo(pushEvent.getAfter(), buildLogs.toString(),
+                Long buildId = databaseWrapper.addBuild(new BuildInfo(pushEvent.getAfter(), buildLogs.toString(),
                         pipelineStartTimestamp));
-                githubClient.createStatusMsg(pushEvent, CommitState.FAILURE, "Tests failed");
+                githubClient.createStatusMsg(pushEvent, CommitState.FAILURE, "Tests failed", buildId);
                 log.info("Tests failed...");
                 return;
             }
         } catch (UnexpectedCIJobErrorException e) {
             log.error("Unexpected error occurred, errorMessage={}", e.getMessage());
-            databaseWrapper.addBuild(new BuildInfo(pushEvent.getAfter(), "Unexpected error occurred on server",
+            Long buildId = databaseWrapper.addBuild(new BuildInfo(pushEvent.getAfter(), "Unexpected error occurred on server",
                     pipelineStartTimestamp));
-            githubClient.createStatusMsg(pushEvent, CommitState.ERROR, "Unexpected error occurred on server");
+            githubClient.createStatusMsg(pushEvent, CommitState.ERROR, "Unexpected error occurred on server", buildId);
             return;
         }
         buildLogs.append("Pipeline successful.");
-        databaseWrapper.addBuild(new BuildInfo(pushEvent.getAfter(), buildLogs.toString(),
+        Long buildId = databaseWrapper.addBuild(new BuildInfo(pushEvent.getAfter(), buildLogs.toString(),
                 pipelineStartTimestamp));
-        githubClient.createStatusMsg(pushEvent, CommitState.SUCCESS, "Pipeline successful");
+        githubClient.createStatusMsg(pushEvent, CommitState.SUCCESS, "Pipeline successful", buildId);
         log.info("Pipeline successful.");
     }
 }
