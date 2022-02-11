@@ -11,6 +11,5 @@ class CiServerApplicationTests {
 
 	@Test
 	void contextLoads() {
-		fail();
 	}
 }
